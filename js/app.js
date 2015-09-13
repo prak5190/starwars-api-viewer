@@ -64,6 +64,14 @@ const StarWarsShips = React.createClass({
         var val = event.target.value;
         this.setState({search : val });
     },
+    setMaxPrice(event) {
+        var val = Number(event.target.value) || 99999999;  
+        this.setState({maxPrice : val});
+    },
+    setMinPrice(event) {
+        var val = Number(event.target.value) || 0;  
+        this.setState({minPrice : val});
+    },
     render() {
         var arr = this.state.ships;
         // Applying search parameter
@@ -71,12 +79,20 @@ const StarWarsShips = React.createClass({
             let reg = new RegExp(this.state.search.split("").join(".*"));
             arr = arr.filter((x) => reg.test(x.name));
         }
+
+        if (this.state.maxPrice)
+            arr = arr.filter((x) => Number(x.cost_in_credits) <= this.state.maxPrice);
+
+        if (this.state.minPrice)
+            arr = arr.filter((x) => Number(x.cost_in_credits) >= this.state.minPrice);
         
         var rows = arr.map((x)=> <Ship key={x.name} ship={x} />);
         return (            
             <div>
             <div>
             <input type='text' onChange={this.search} placeholder="Type a search query "/>
+            <input type='text' onChange={this.setMinPrice} placeholder="set Minimum price "/>
+            <input type='text' onChange={this.setMaxPrice} placeholder="set Max price "/>
             </div>
             <table>
             <thead>
