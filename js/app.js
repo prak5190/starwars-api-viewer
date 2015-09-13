@@ -16,8 +16,8 @@ const Ship = React.createClass({
     render() {
         var x = this.props.ship ;
         return (
-            <tr>
-            <td onClick={this.props.onClick}>{x.name}</td><td>{x.model}</td><td>{x.cost_in_credits}</td>
+            <tr style={{cursor:"pointer"}} onClick={this.props.onClick}>
+            <td>{x.name}</td><td>{x.model}</td><td>{x.cost_in_credits}</td>
             </tr>)
     }
 });
@@ -84,7 +84,7 @@ const ShipFullDetails = React.createClass({
             <div>
             <div> Name : {x.name}</div>
             <div> Model : {x.model}</div>
-            <div> Max Atmosphere Speed : {x.max_atmosphere_speed}</div>
+            <div> Max Atmosphere Speed : {x.max_atmosphering_speed}</div>
             <div> Passengers : {x.passengers}</div>
             <PilotLists data={x.pilots} />
             </div>)
@@ -144,22 +144,30 @@ const StarWarsShips = React.createClass({
     select(x) {
         this.setState({ selectedShip : x});
     },
+    applySearchQuery(arr,val) {
+        var reg = new RegExp(val.split("").join(".*"),"i");        
+        return  arr.filter((x) => reg.test(x.name));
+    },
+    applyMaxPrice(arr,val) {
+        return arr.filter((x) => Number(x.cost_in_credits) <= val);
+    },
+    applyMinPrice(arr,val) {
+        return arr.filter((x) => Number(x.cost_in_credits) >= val);
+    },
     render() {
         var arr = this.state.ships;
         // Applying search parameter
-        if (this.state.search) {            
-            let reg = new RegExp(this.state.search.split("").join(".*"));
-            arr = arr.filter((x) => reg.test(x.name));
-        }
+        if (this.state.search)
+            arr = this.applySearchQuery(arr,this.state.search);
 
+        // Applying price filters
         if (this.state.maxPrice)
-            arr = arr.filter((x) => Number(x.cost_in_credits) <= this.state.maxPrice);
-        
+            arr = this.applyMaxPrice(arr,this.state.maxPrice);
         if (this.state.minPrice)
-            arr = arr.filter((x) => Number(x.cost_in_credits) >= this.state.minPrice);
+            arr = this.applyMinPrice(arr,this.state.minPrice);
         
         var rows = arr.map((x)=> <Ship onClick={this.select.bind(this,x)} key={x.name} ship={x} />);
-
+        
         var selectedShip;
         if(this.state.selectedShip)
             selectedShip =(<ShipFullDetails data={this.state.selectedShip} />);
