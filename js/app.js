@@ -60,11 +60,24 @@ const StarWarsShips = React.createClass({
         }
         this.setState({ships : arr});
     },
+    search(event) {
+        var val = event.target.value;
+        this.setState({search : val });
+    },
     render() {
-        var arr = this.state.ships;        
+        var arr = this.state.ships;
+        // Applying search parameter
+        if (this.state.search) {            
+            let reg = new RegExp(this.state.search.split("").join(".*"));
+            arr = arr.filter((x) => reg.test(x.name));
+        }
+        
         var rows = arr.map((x)=> <Ship key={x.name} ship={x} />);
         return (            
             <div>
+            <div>
+            <input type='text' onChange={this.search} placeholder="Type a search query "/>
+            </div>
             <table>
             <thead>
             <td>Name</td><td>Model</td><td onClick={this.sortByPrice}>Price</td>  
