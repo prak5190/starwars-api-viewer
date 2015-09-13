@@ -25,7 +25,6 @@ const Ship = React.createClass({
 const Pilot = React.createClass({
     render() {
         var x = this.props.data ;
-        console.log(x);
         return (            
             <tr>
             <td onClick={this.props.onClick}>{x.name}</td><td>{x.height}</td><td>{x.gender}</td>
@@ -44,7 +43,6 @@ const PilotLists = React.createClass({
         var self = this;
         arr.forEach((x) => {
             x.then((y) => {
-                console.log("Got data ",y);
                 data.push(y);
                 self.setState({data : data});
             })
