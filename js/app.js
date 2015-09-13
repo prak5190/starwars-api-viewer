@@ -22,6 +22,59 @@ const Ship = React.createClass({
     }
 });
 
+const Pilot = React.createClass({
+    render() {
+        var x = this.props.data ;
+        console.log(x);
+        return (            
+            <tr>
+            <td onClick={this.props.onClick}>{x.name}</td><td>{x.height}</td><td>{x.gender}</td>
+            </tr>)
+    }
+});
+
+const PilotLists = React.createClass({
+    getInitialState() {        
+        return { data : []};
+    },
+    setPilotData() {
+        var pilots = this.props.data;
+        var arr = pilots.map((x) => get(x));
+        var data = [];
+        var self = this;
+        arr.forEach((x) => {
+            x.then((y) => {
+                console.log("Got data ",y);
+                data.push(y);
+                self.setState({data : data});
+            })
+        });
+    },
+    componentDidMount() {
+        this.setPilotData();
+    },
+    componentWillReceiveProps() {
+        this.setPilotData();
+    },
+    render() {
+        if (this.props.data.length == 0)
+            return (<div> No Pilots present </div>)
+        var rows = this.state.data.map((x) => <Pilot data={x} key={x.name}/>);
+        return (
+            <div>            
+            <table>
+            <thead>
+            <td>Name</td><td>Height</td><td>Gender</td>  
+            </thead>
+            <tbody>
+            {rows}
+            </tbody>
+            </table>
+            </div>
+        )
+    }
+});
+
 const ShipFullDetails = React.createClass({
     render() {
         var x = this.props.data;
@@ -33,6 +86,7 @@ const ShipFullDetails = React.createClass({
             <div> Model : {x.model}</div>
             <div> Max Atmosphere Speed : {x.max_atmosphere_speed}</div>
             <div> Passengers : {x.passengers}</div>
+            <PilotLists data={x.pilots} />
             </div>)
     }
 });
@@ -100,7 +154,7 @@ const StarWarsShips = React.createClass({
 
         if (this.state.maxPrice)
             arr = arr.filter((x) => Number(x.cost_in_credits) <= this.state.maxPrice);
-
+        
         if (this.state.minPrice)
             arr = arr.filter((x) => Number(x.cost_in_credits) >= this.state.minPrice);
         
