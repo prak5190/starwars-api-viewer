@@ -41,6 +41,25 @@ const StarWarsShips = React.createClass({
         };
         update(URL.starships);
     },
+    sortByPrice() {
+        var arr = this.state.ships;
+        if (this.state.priceSort > 0) {
+            arr.sort((x,y) => {
+                if (Number.isNaN(Number(x.cost_in_credits))) 
+                    return 1;
+                return Number(x.cost_in_credits) - Number(y.cost_in_credits);
+            });
+            this.state.priceSort = -1;
+        } else {
+            arr.sort((x,y) => {
+                if (Number.isNaN(Number(x.cost_in_credits)))
+                    return 1;
+                return Number(y.cost_in_credits) - Number(x.cost_in_credits);
+            })
+            this.state.priceSort = 1;
+        }
+        this.setState({ships : arr});
+    },
     render() {
         var arr = this.state.ships;        
         var rows = arr.map((x)=> <Ship key={x.name} ship={x} />);
@@ -48,7 +67,7 @@ const StarWarsShips = React.createClass({
             <div>
             <table>
             <thead>
-            <td>Name</td><td>Model</td><td>Price</td>  
+            <td>Name</td><td>Model</td><td onClick={this.sortByPrice}>Price</td>  
             </thead>
             <tbody>
             {rows}
