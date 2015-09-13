@@ -22,6 +22,21 @@ const Ship = React.createClass({
     }
 });
 
+const ShipFullDetails = React.createClass({
+    render() {
+        var x = this.props.data;
+        if (!x)
+            return (<div>Nothing selected</div>)
+        return (
+            <div>
+            <div> Name : {x.name}</div>
+            <div> Model : {x.model}</div>
+            <div> Max Atmosphere Speed : {x.max_atmosphere_speed}</div>
+            <div> Passengers : {x.passengers}</div>
+            </div>)
+    }
+});
+
 const StarWarsShips = React.createClass({
     getInitialState() {        
         return { priceSort : 0, ships : []};
@@ -72,6 +87,9 @@ const StarWarsShips = React.createClass({
         var val = Number(event.target.value) || 0;  
         this.setState({minPrice : val});
     },
+    select(x) {
+        this.setState({ selectedShip : x});
+    },
     render() {
         var arr = this.state.ships;
         // Applying search parameter
@@ -86,7 +104,12 @@ const StarWarsShips = React.createClass({
         if (this.state.minPrice)
             arr = arr.filter((x) => Number(x.cost_in_credits) >= this.state.minPrice);
         
-        var rows = arr.map((x)=> <Ship key={x.name} ship={x} />);
+        var rows = arr.map((x)=> <Ship onClick={this.select.bind(this,x)} key={x.name} ship={x} />);
+
+        var selectedShip;
+        if(this.state.selectedShip)
+            selectedShip =(<ShipFullDetails data={this.state.selectedShip} />);
+        
         return (            
             <div>
             <div>
@@ -94,14 +117,17 @@ const StarWarsShips = React.createClass({
             <input type='text' onChange={this.setMinPrice} placeholder="set Minimum price "/>
             <input type='text' onChange={this.setMaxPrice} placeholder="set Max price "/>
             </div>
-            <table>
+            <table className="pull-left">
             <thead>
             <td>Name</td><td>Model</td><td onClick={this.sortByPrice}>Price</td>  
             </thead>
             <tbody>
             {rows}
             </tbody>
-            </table>            
+            </table>
+            <div className="pull-right">
+            {selectedShip}
+            </div>
             </div>
         )            
     }
