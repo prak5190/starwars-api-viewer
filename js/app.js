@@ -62,7 +62,7 @@ const PilotLists = React.createClass({
         var rows = this.state.data.map((x) => <Pilot data={x} key={x.name}/>);
         return (
             <div>            
-            <table>
+            <table className="table table-striped">
             <thead>
             <td>Name</td><td>Height</td><td>Gender</td>  
             </thead>
@@ -166,20 +166,28 @@ const StarWarsShips = React.createClass({
         
         return (            
             <div>
-            <div>
-            <input type='text' onChange={this.search} placeholder="Type a search query "/>
-            <input type='text' onChange={this.setMinPrice} placeholder="set Minimum price "/>
-            <input type='text' onChange={this.setMaxPrice} placeholder="set Max price "/>
+            <div className="col-md-6">
+            <form className="form-inline">
+            <div className="form-group">
+            <label>Search <input type='text' placeholder="Search By name" className="form-control" onChange={this.search} /></label>
             </div>
-            <table className="pull-left">
+            <div className="form-group">
+            <label>Enter Max Price <input type='text' placeholder="Enter Max Price" className="form-control" onChange={this.setMaxPrice} /></label>
+            </div>
+            <div className="form-group">
+            <label>Enter Min Price <input type='text' placeholder="Enter Min Price" className="form-control" onChange={this.setMinPrice} /></label>
+            </div>
+            </form>
+            <table className="pull-left table table-striped">
             <thead>
             <td>Name</td><td>Model</td><td onClick={this.sortByPrice}>Price</td>  
             </thead>
             <tbody>
             {rows}
             </tbody>
-            </table>
-            <div className="pull-right">
+            </table>            
+            </div>
+            <div className="col-md-6" style={{position:"fixed",right : 0}}>
             {selectedShip}
             </div>
             </div>
